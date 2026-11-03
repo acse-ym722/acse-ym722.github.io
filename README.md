@@ -7,19 +7,20 @@
 ```text
 src/
 ├── AcademicSite.tsx          全站路由、页面与双语交互
-├── main.tsx                 应用入口（BrowserRouter 只在这里出现）
+├── main.tsx                 主页入口（BrowserRouter 只在这里出现）
+├── poreboost-main.tsx       原始超分演示的独立入口
+├── App.tsx                  原始超分演示，视觉与交互保持原样
+├── App.css                  原始超分演示样式
+├── cases/poreboost/ResearchUI.tsx 原始演示的交互组件
 ├── homepage.css             主页、研究、写作与关于页样式
 ├── content/
 │   ├── site.ts              姓名、首页介绍、关于信息与通用文案
 │   ├── research.ts          研究主线、阶段、资源与后续问题
 │   ├── posts.ts             Markdown 自动索引与语言回退
 │   └── posts/               中英双语文章
-└── cases/
-    └── poreboost/           独立的超分交互案例
-        ├── PoreBoostCase.tsx
-        ├── ResearchUI.tsx
-        ├── case.css
-        └── assets/          案例图像模块
+└── cases/poreboost/assets/   已核验的案例图像模块
+
+poreboost.html 是独立演示的 HTML 入口，与主页分开构建，避免两套全局样式相互影响。
 ```
 
 ## 修改个人信息
@@ -81,7 +82,7 @@ research: super-resolution
 - `reading`：有趣文章与资料的阅读笔记。
 - `guide`：选择公开的技术教程。
 
-`research` 是可选项，不需要关联研究主线时可省略。文章按日期自动排序，不需要手动修改列表。
+`research` 是可选项，不需要关联研究主线时可省略。文章按日期自动排序，不需要手动修改列表。标记为 `essay` 的文章会自动使用细方格与磨砂纸背景；Markdown 中的 HTTP/HTTPS 链接会自动在新标签页打开。
 
 ## 私有教程与选择性开源
 
@@ -91,10 +92,10 @@ research: super-resolution
 
 ## 新增独立案例
 
-1. 在 `src/cases/` 下建立独立目录，案例组件与样式尽量只作用于该目录。
-2. 在 `AcademicSite.tsx` 中使用 `React.lazy` 与 `Suspense` 注册独立路由。
+1. 为案例建立独立 HTML 与 React 入口，并在 `vite.config.ts` 的多页面 `input` 中注册。
+2. 在 `AcademicSite.tsx` 中通过独立框架接入案例，保留案例自己的样式、锚点和交互。
 3. 在对应研究主线的 `interactive` 中填写案例地址。
-4. 验证案例内部锚点、返回研究主线、手机布局和全部交互。
+4. 验证案例内部锚点、外部资源、手机布局和全部交互。
 
 超分案例地址为 `/research/super-resolution/interactive`。它只在访客进入时加载，不影响首页初始体积。
 
