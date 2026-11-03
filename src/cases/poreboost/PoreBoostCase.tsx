@@ -36,7 +36,7 @@ function GlobalFlow({ active }: { active: number }) {
     <div className="flow-source"><div className="flow-image large"><img src={images.lrGlobal} alt="全局低分辨率碳酸盐岩图像" /><span>全局 LR</span></div><small>大视野 · 细节模糊</small></div>
     <div className="flow-source"><div className="flow-image"><img src={images.hrLocal} alt="局部高分辨率碳酸盐岩图像" /><span>局部 HR</span></div><small>小视野 · 细节清晰</small></div>
     <div className="flow-operation"><span>{active === 0 ? '下采样＋模板匹配' : active === 1 ? '配对训练' : '整块推理＋三维重建'}</span><ArrowRight size={24} /></div>
-    <div className="flow-output"><div className="flow-image output"><img src={active === 0 ? images.lrGlobal : active === 1 ? images.hrLocal : images.reconstructSwinirgan} alt="当前流程输出" /><span>{active === 0 ? '配对区域' : active === 1 ? 'SwinIRGAN' : '全局 SR'}</span></div><small>{active === 0 ? '同一位置 · 两种尺度' : '学习 LR → HR 映射' : '大视野 · 微细结构'}</small></div>
+    <div className="flow-output"><div className="flow-image output"><img src={active === 0 ? images.lrGlobal : active === 1 ? images.hrLocal : images.reconstructSwinirgan} alt="当前流程输出" /><span>{active === 0 ? '配对区域' : active === 1 ? 'SwinIRGAN' : '全局 SR'}</span></div><small>{active === 0 ? '同一位置 · 两种尺度' : active === 1 ? '学习 LR → HR 映射' : '大视野 · 微细结构'}</small></div>
   </div>
 }
 
