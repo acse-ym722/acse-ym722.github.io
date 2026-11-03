@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowDown, ArrowRight, BookOpen, Check, Copy, Database, ExternalLink, FileText, Github, Layers3, Microscope, ScanSearch } from 'lucide-react'
+import { ArrowRight, BookOpen, Check, Copy, Database, ExternalLink, FileText, Github, Layers3, Microscope, ScanSearch } from 'lucide-react'
 import { CompareSlider, DownsampleDemo, FigureViewer, Metric, SectionHeading, Stepper } from './cases/poreboost/ResearchUI'
 import * as images from './cases/poreboost/assets'
 import './App.css'
@@ -14,7 +14,7 @@ const links = {
 }
 
 const nav = [
-  ['overview', '速览'], ['principle', '1 · 原理'], ['global', '2 · 全局高分'], ['beyond', '3 · 超越极限'], ['downsample', '4 · 下采样'], ['resources', '5 · 资源'],
+  ['principle', '1 · 原理'], ['global', '2 · 全局重建'], ['beyond', '3 · 分辨率外推'], ['downsample', '4 · 下采样'], ['resources', '5 · 资源'],
 ]
 
 const globalSteps = [
@@ -52,7 +52,7 @@ function App() {
   const [globalStep, setGlobalStep] = useState(0)
   const [principleStep, setPrincipleStep] = useState(0)
   const [strategy, setStrategy] = useState<'twice' | 'once'>('twice')
-  const [activeSection, setActiveSection] = useState('overview')
+  const [activeSection, setActiveSection] = useState('principle')
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -71,7 +71,7 @@ function App() {
   }
 
   return <>
-    <a className="skip-link" href="#overview">跳到正文</a>
+    <a className="skip-link" href="#principle">跳到正文</a>
     <header className="site-header">
       <div className="header-inner">
         <div className="brand-mark">PoreBoost<span>GAN</span></div>
@@ -87,22 +87,8 @@ function App() {
     </header>
 
     <main>
-      <section id="overview" className="paper-section overview-section">
-        <SectionHeading number="0" title="一分钟速览" intro={<><strong>核心问题：</strong>micro-CT 的大视野与高分辨率难以兼得。本研究用局部 HR 扫描“教会”模型理解全局 LR 图像，再把学到的跨尺度映射用于整块岩心，甚至外推到仪器未曾直接拍到的尺度。</>} />
-        <div className="overview-grid">
-          <article><span className="tag magenta">矛盾</span><h3>看得大，就看不细</h3><p>碳酸盐岩孔隙跨越多个尺度。全局 LR 扫描保留岩心全貌，却会模糊微孔、裂缝与孔壁；局部 HR 扫描看清细节，又失去完整空间信息。</p></article>
-          <article><span className="tag blue">方法</span><h3>SwinIRGAN</h3><p>用移位窗口注意力连接局部与长程结构，再以 GAN 约束增强高频细节。目标不只是“更清晰”，更是让孔隙度、Euler 数和比表面积更可靠。</p></article>
-          <article><span className="tag ochre">推进</span><h3>重建 → 外推 → 下采样</h3><p>先做全局 HR 重建，再预测 ultraHR；将 ultraHR 下采样回原尺寸后，部分细结构影响仍被保留，为无 ultraHR 真值时的分析提供新路径。</p></article>
-        </div>
-        <div className="hero-evidence">
-          <div className="hero-rock"><img src={images.heroRock} alt="多分辨率碳酸盐岩三维数字岩心" /><span className="scan-line" aria-hidden="true" /></div>
-          <div className="hero-evidence-copy"><span className="mini-label">FROM PIXELS TO PHYSICS</span><h2>图像更清晰，<br />岩石物理也要更可信。</h2><p>评价不止停留在 PSNR、SSIM，而是继续追问：孔径连通关系有没有改变？微孔网络是否被保留？孔壁粗糙度是否接近真实？</p><a href="#principle" className="text-link">从研究原理开始 <ArrowDown size={15} /></a></div>
-          <div className="hero-metrics"><Metric value="99.48%" label="Euler 数准确率" note="生物成因碳酸盐岩重建" /><Metric value="97.05%" label="Euler 数准确率" note="更高分辨率外推" /><Metric value="+15.59%" label="Euler 数提升" note="MRCCM 下采样流程，对数坐标" /></div>
-        </div>
-      </section>
-
       <section id="principle" className="paper-section">
-        <SectionHeading number="1" title="研究原理：让局部细节与全局结构对话" intro={<><strong>讲解要点：</strong>SwinIRGAN 的关键不是单纯增加像素，而是学习不同分辨率之间的结构映射。窗口注意力负责高效提取局部关系，移位窗口逐步打通长程依赖，GAN 则补足真实纹理与高频边界。</>} />
+        <SectionHeading number="1" title="SwinIRGAN 如何恢复孔隙结构" intro={<><strong>讲解要点：</strong>模型学习同一岩石区域从 LR 到 HR 的结构变化。窗口注意力建模孔隙与矿物边界，GAN 补充高频细节。</>} />
         <Stepper steps={principleSteps} active={principleStep} onChange={setPrincipleStep} label="SwinIRGAN 原理" />
         <ArchitectureVisual active={principleStep} />
         <div className="concept-strip"><div><strong>LR</strong><span>低分辨率输入</span></div><ArrowRight size={18} /><div><strong>特征提取</strong><span>卷积＋残差 Swin Transformer 块</span></div><ArrowRight size={18} /><div><strong>图像重建</strong><span>上采样与高频细节恢复</span></div><ArrowRight size={18} /><div><strong>物理评价</strong><span>孔隙度 · Euler 数 · 比表面积</span></div></div>
@@ -110,19 +96,19 @@ function App() {
       </section>
 
       <section id="global" className="paper-section">
-        <SectionHeading number="2" title="实验一：全局低分＋局部高分，如何得到全局高分？" accent="blue" intro={<><strong>核心思路：</strong>不要求仪器一次拍清整块岩心，而是把“看得全”的 LR 与“看得清”的局部 HR 配成训练对。模型学会局部区域中的跨尺度规律后，再把这种规律推广到完整 LR 岩心。</>} />
+        <SectionHeading number="2" title="全局 LR＋局部 HR → 全局 SR" accent="blue" intro={<><strong>实验流程：</strong>将全局 LR 与同一岩石的局部 HR 配成训练对，再把学习到的跨尺度映射应用于完整岩心。</>} />
         <Stepper steps={globalSteps} active={globalStep} onChange={setGlobalStep} label="全局高分辨率重建" />
         <GlobalFlow active={globalStep} />
         <div className="experiment-grid">
-          <div><h3>同一区域，重建方法对照</h3><p className="body-copy">双三次插值只能平滑地填满新增像素；SwinIRGAN 则根据训练中学到的孔隙结构恢复边界和纹理。拖动下方滑块观察差异，右侧 HR 是实测参照。</p><div className="reference-row"><img src={images.reconstructHr} alt="实测高分辨率参照" /><span><strong>HR Ground Truth</strong>实测高分辨率图像，用于定量评价</span></div></div>
+          <div><h3>重建结果对比</h3><p className="body-copy">拖动滑块比较双三次插值与 SwinIRGAN；实测 HR 作为参照。</p><div className="reference-row"><img src={images.reconstructHr} alt="实测高分辨率参照" /><span><strong>HR Ground Truth</strong>实测高分辨率图像</span></div></div>
           <CompareSlider before={images.reconstructBicubic} after={images.reconstructSwinirgan} beforeLabel="Bicubic" afterLabel="SwinIRGAN" alt="全局重建结果" />
         </div>
-        <div className="finding-band blue-band"><span className="finding-label">实验发现</span><p>GAN 类模型在复杂拓扑上表现更突出。对生物成因碳酸盐岩，SwinIRGAN 将 <strong>Euler 数误差降至 0.52%</strong>；比表面积相比双三次插值提高约 <strong>30%</strong>，相比 ESRGAN 提高约 <strong>11%</strong>。</p></div>
+        <div className="finding-band blue-band"><span className="finding-label">结果</span><p>生物成因碳酸盐岩中，SwinIRGAN 的 <strong>Euler 数误差为 0.52%</strong>；比表面积较双三次插值提高约 <strong>30%</strong>，较 ESRGAN 提高约 <strong>11%</strong>。</p></div>
         <FigureViewer src={images.figure3Reconstruction} caption="论文 Figure 3：重建图像、图像质量、分割结果与岩石物理参数的综合比较。" />
       </section>
 
       <section id="beyond" className="paper-section">
-        <SectionHeading number="3" title="实验二：如何超出仪器分辨率极限？" accent="magenta" intro={<><strong>研究问题：</strong>如果模型已经学会 LR → HR，它能否继续预测 HR → ultraHR？研究用同一岩石的 16 μm、4 μm 与 1 μm 三档扫描进行验证，其中 1 μm 图像作为 ultraHR 地面真值。</>} />
+        <SectionHeading number="3" title="从 HR 外推到 ultraHR" accent="magenta" intro={<><strong>验证方式：</strong>比较两种超分路径，并用独立的 1 μm 实测扫描检验预测结果；该图像不作为模型输入。</>} />
         <div className="strategy-switch" role="group" aria-label="选择超分辨率外推策略">
           <button className={strategy === 'twice' ? 'active' : ''} onClick={() => setStrategy('twice')}><span>策略 1</span>LR 连续超分两次<small>16 μm → 4 μm → 1 μm</small></button>
           <button className={strategy === 'once' ? 'active' : ''} onClick={() => setStrategy('once')}><span>策略 2</span>以 HR 为输入超分一次<small>4 μm → 1 μm</small></button>
@@ -133,7 +119,7 @@ function App() {
           <div className="current accent"><span>ultraHR</span><strong>1 μm</strong><small>{strategy === 'twice' ? '第二次 ×4' : '一次 ×4'} · 预测后验证</small></div>
         </div>
         <div className="experiment-grid beyond-grid">
-          <div><h3>预测结果对照 1 μm 实测真值</h3><p className="body-copy">这里展示的是{strategy === 'twice' ? '策略 1：LR 连续两次超分' : '策略 2：HR 再超分一次'}得到的 SwinIRGAN 结果。模型并非“看见”了 1 μm 扫描，而是从已学习的尺度变化规律进行外推，再由独立实测图像检验。</p><div className="caution"><ScanSearch size={19} /><span><strong>预测 ≠ 实测。</strong> ultraHR 的细节包含模型先验，必须通过独立高分辨率扫描和物理参数验证，不能直接当作新观测。</span></div></div>
+          <div><h3>与 1 μm 实测图像对比</h3><p className="body-copy">当前显示：{strategy === 'twice' ? 'LR 连续两次超分' : 'HR 再超分一次'}。</p><div className="caution"><ScanSearch size={19} /><span><strong>预测 ≠ 实测。</strong> ultraHR 包含模型先验，不能替代独立观测。</span></div></div>
           <CompareSlider before={images.ultraGroundTruth} after={strategy === 'twice' ? images.ultraSwinirganTwice : images.ultraSwinirganOnce} beforeLabel="1 μm 真值" afterLabel="SwinIRGAN 预测" alt="超高分辨率外推结果" />
         </div>
         <div className="metric-row"><Metric value="≈3%" label="Euler 数预测偏差" note="论文文字报告；摘要对应 97.05% 准确率" /><Metric value="0.38%" label="比表面积误差" note="对数坐标，SwinIRGAN" /><Metric value="224³ → 896³" label="三维体素规模" note="HR 到 ultraHR，边长 ×4" /></div>
@@ -141,19 +127,19 @@ function App() {
       </section>
 
       <section id="downsample" className="paper-section">
-        <SectionHeading number="4" title="实验三：回到原分辨率，为什么还能保留更多信息？" accent="ochre" intro={<><strong>反直觉发现：</strong>将 ultraHR 预测结果下采样回 HR 尺寸后，图像并未简单退回原貌。与原始 HR 扫描相比，下采样结果在 Euler 数和比表面积上表现出更多细结构信息。</>} />
-        <div className="explanation-lead"><span>作者解释</span><blockquote>超分时，模型预测并写入了大量微孔、孔壁边界和连通细节；下采样时，这些信息并没有被完全抛弃。区域聚合会把部分细节转化为体素灰度、边界覆盖率和局部统计差异，所以即使图像尺寸回到原样，仍可能保留比原始 HR 更丰富的结构信息。</blockquote></div>
+        <SectionHeading number="4" title="ultraHR 下采样后保留了什么" accent="ochre" intro={<><strong>实验观察：</strong>回到 HR 尺寸后，Euler 数和比表面积仍高于原始 HR，说明部分预测细结构以灰度和边界覆盖率的形式保留。</>} />
+        <div className="explanation-lead"><span>机制</span><blockquote>超分先写入微孔与孔壁细节；区域聚合在下采样时保留部分灰度和边界信息。图像尺寸恢复原状，但并不等于回到原始 HR。</blockquote></div>
         <DownsampleDemo />
         <div className="experiment-grid downsample-grid">
-          <div><h3>原始 HR 与“超分后再下采样”</h3><p className="body-copy">两种图像具有相同的显示尺寸，但形成路径不同：左侧来自仪器直接扫描；右侧先由 SwinIRGAN 生成 ultraHR，再通过双线性插值回到 HR。右侧保留了预测细结构对最终体素的影响。</p><div className="caution green-caution"><Layers3 size={19} /><span>保留的是<strong>部分统计与结构影响</strong>，并非无损保存全部 ultraHR 信息；结果仍依赖超分预测的可靠性。</span></div></div>
+          <div><h3>同尺寸，不同形成路径</h3><p className="body-copy">左：仪器直接扫描。右：SwinIRGAN 超分后，再经双线性插值下采样。</p><div className="caution green-caution"><Layers3 size={19} /><span>保留的是<strong>部分统计与结构影响</strong>，不是无损保存 ultraHR。</span></div></div>
           <CompareSlider before={images.downsampleHr} after={images.downsampleSwinirgan} beforeLabel="原始 HR" afterLabel="SR 后下采样" alt="下采样信息保留实验" />
         </div>
-        <div className="finding-band green-band"><span className="finding-label">实验发现</span><p>各模型的 <strong>Euler 数提高约 15%</strong>（对数坐标），其中 SwinIRGAN 策略 2 为 <strong>15.59%</strong>；比表面积提高约 <strong>1.5–2.5%</strong>。这说明部分 ultraHR 高频孔隙特征与更细表面结构进入了下采样图像。</p></div>
+        <div className="finding-band green-band"><span className="finding-label">结果</span><p>各模型的 <strong>Euler 数提高约 15%</strong>（对数坐标），SwinIRGAN 策略 2 为 <strong>15.59%</strong>；比表面积提高约 <strong>1.5–2.5%</strong>。</p></div>
         <FigureViewer src={images.figure5Downsampling} caption="论文 Figure 5：ultraHR 重建经下采样后的图像与物理参数变化。" />
       </section>
 
       <section id="resources" className="paper-section resources-section">
-        <SectionHeading number="5" title="论文、代码与开放数据" intro={<><strong>复现研究：</strong>论文、二维／三维超分代码和多分辨率碳酸盐岩数据均已提供公开入口。欢迎从原始三维 TIFF 出发，复现配对训练、外推与下采样实验。</>} />
+        <SectionHeading number="5" title="论文、代码与数据" intro={<>代码、数据和论文均开放，可从原始三维 TIFF 复现实验。</>} />
         <div className="resource-list">
           <a href={links.paper} target="_blank" rel="noreferrer"><FileText size={24} /><span><strong>阅读论文</strong><small>SPE Journal · DOI 10.2118/234678-PA</small></span><ExternalLink size={17} /></a>
           <a href={links.github} target="_blank" rel="noreferrer"><Github size={24} /><span><strong>PoreBoostGAN</strong><small>二维与三维超分代码、配置和推理流程</small></span><ExternalLink size={17} /></a>
