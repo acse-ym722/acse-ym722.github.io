@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, Github } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -15,8 +15,6 @@ import {
 import { getResearchLine, researchLines, text, type ResearchLink } from './content/research'
 import { getTranslation, posts, type Post, type PostKind } from './content/posts'
 import { site, ui, type Language } from './content/site'
-
-const PoreBoostCase = lazy(() => import('./cases/poreboost/PoreBoostCase'))
 
 type SiteContext = { language: Language }
 
@@ -52,7 +50,9 @@ function useLanguage() {
 }
 
 function useDocumentTitle(title: string) {
-  useEffect(() => { document.title = title }, [title])
+  useEffect(() => {
+    document.title = title
+  }, [title])
 }
 
 function ScrollManager() {
@@ -79,8 +79,15 @@ function SiteLayout({ language, onLanguageChange }: { language: Language; onLang
         </nav>
       </div>
       <div className="sidebar-bottom">
-        <button className="language-toggle" type="button" onClick={() => onLanguageChange(language === 'zh' ? 'en' : 'zh')} aria-label={ui.language[language]}>
-          <span className={language === 'zh' ? 'selected' : ''}>中</span><span> / </span><span className={language === 'en' ? 'selected' : ''}>EN</span>
+        <button
+          className="language-toggle"
+          type="button"
+          onClick={() => onLanguageChange(language === 'zh' ? 'en' : 'zh')}
+          aria-label={ui.language[language]}
+        >
+          <span className={language === 'zh' ? 'selected' : ''}>中</span>
+          <span> / </span>
+          <span className={language === 'en' ? 'selected' : ''}>EN</span>
         </button>
         <a className="github-link" href={site.github} target="_blank" rel="noreferrer">
           <Github size={15} strokeWidth={1.6} />{ui.github[language]}
@@ -202,16 +209,22 @@ function ResearchDetailPage() {
   const line = getResearchLine(slug)
   useDocumentTitle(line ? `${text(line.shortTitle, language)} — ${site.name[language]}` : copy.empty[language])
   if (!line) return <NotFoundPage />
+
   const related = posts.filter(post => {
     const { translation } = getTranslation(post, language)
     return translation?.research === line.slug
   })
+
   return <article className="standard-page research-detail">
     <Link className="back-link" to="/research"><ArrowLeft size={15} />{language === 'zh' ? '返回研究主线' : 'All research lines'}</Link>
     <PageHeader eyebrow={`${line.index} / ${text(line.status, language)}`} title={text(line.title, language)} intro={text(line.summary, language)}>
       <div className="keyword-list">{line.keywords.map(keyword => <span key={keyword.en}>{text(keyword, language)}</span>)}</div>
     </PageHeader>
-    <Section label={`01 / ${copy.researchQuestion[language]}`}><p className="research-question">{text(line.question, language)}</p></Section>
+
+    <Section label={`01 / ${copy.researchQuestion[language]}`}>
+      <p className="research-question">{text(line.question, language)}</p>
+    </Section>
+
     <Section label={`02 / ${copy.researchPath[language]}`}>
       <ol className="research-timeline">
         {line.stages.map((stage, index) => <li key={stage.title.en}>
@@ -220,6 +233,7 @@ function ResearchDetailPage() {
         </li>)}
       </ol>
     </Section>
+
     <Section label={`03 / ${copy.resources[language]}`}>
       <div className="resource-table">{line.resources.map(resource => <ResearchLinkRow key={resource.href} link={resource} language={language} />)}</div>
       {line.interactive && <div className="case-invitation">
@@ -229,10 +243,12 @@ function ResearchDetailPage() {
         <Link className="primary-link" to={line.interactive.href}>{text(line.interactive.label, language)} <ArrowUpRight size={17} /></Link>
       </div>}
     </Section>
+
     <Section label={`04 / ${copy.next[language]}`}>
       <p className="section-intro">{copy.nextIntro[language]}</p>
       <ol className="question-list">{line.nextQuestions.map((question, index) => <li key={question.en}><span>0{index + 1}</span><p>{text(question, language)}</p></li>)}</ol>
     </Section>
+
     {related.length > 0 && <Section label={`05 / ${copy.related[language]}`}><PostList items={related} language={language} /></Section>}
   </article>
 }
@@ -246,6 +262,7 @@ function WritingPage() {
     const { translation } = getTranslation(post, language)
     return translation?.kind === filter
   }), [filter, language])
+
   return <div className="standard-page">
     <PageHeader
       eyebrow={`WRITING / ${ui.nav.writing[language]}`}
@@ -273,8 +290,9 @@ function PostPage() {
   const result = post ? getTranslation(post, language) : undefined
   const translation = result?.translation
   useDocumentTitle(translation ? `${translation.title} — ${site.name[language]}` : ui.missing[language])
+
   if (!post || !translation || !result) return <NotFoundPage />
-  return <article className="article-page">
+  return <article className={`article-page${translation.kind === 'essay' ? ' essay-page' : ''}`}>
     <Link className="back-link" to="/writing"><ArrowLeft size={15} />{ui.back[language]}</Link>
     <header className="article-header">
       <div className="article-meta"><span>{kindLabels[translation.kind][language]}</span><time dateTime={post.date}>{post.date}</time><span>{translation.category}</span></div>
@@ -282,7 +300,15 @@ function PostPage() {
       <p className="article-deck">{translation.excerpt}</p>
     </header>
     {result.isFallback && <p className="language-notice">{ui.fallback[language]}</p>}
-    <div className="article-body"><ReactMarkdown remarkPlugins={[remarkGfm]}>{translation.body}</ReactMarkdown></div>
+    <div className="article-body"><ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        a: ({ href, children }) => {
+          const external = /^https?:\/\//i.test(href ?? '')
+          return <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>{children}</a>
+        },
+      }}
+    >{translation.body}</ReactMarkdown></div>
     {translation.research && getResearchLine(translation.research) && <div className="article-end">
       <span className="eyebrow">{language === 'zh' ? '所属研究主线' : 'RESEARCH LINE'}</span>
       <Link className="text-arrow-link" to={`/research/${translation.research}`}>{text(getResearchLine(translation.research)!.shortTitle, language)} <ArrowRight size={15} /></Link>
@@ -314,7 +340,11 @@ function NotFoundPage() {
 
 function InteractiveCase() {
   useDocumentTitle('PoreBoostGAN — Meng Yang')
-  return <Suspense fallback={<div className="case-loading"><span>PoreBoostGAN</span><p>正在加载交互研究案例…<br />Loading interactive research case…</p></div>}><PoreBoostCase /></Suspense>
+  return <iframe
+    className="interactive-case-frame"
+    src="/poreboost.html"
+    title="PoreBoostGAN 交互式论文讲解 / Interactive paper explanation"
+  />
 }
 
 export default function AcademicSite() {
@@ -326,6 +356,7 @@ export default function AcademicSite() {
     try { localStorage.setItem('preferred-language', next) } catch { /* Browsing can continue without storage. */ }
   }
   useEffect(() => { document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en' }, [language])
+
   return <>
     <ScrollManager />
     <Routes>
