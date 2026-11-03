@@ -6,6 +6,8 @@ export const site = {
   name: { zh: '孟洋', en: 'Meng Yang' } satisfies LocalizedText,
   role: { zh: '个人学术主页', en: 'Personal academic homepage' } satisfies LocalizedText,
   github: 'https://github.com/acse-ym722',
+  scholar: 'https://scholar.google.com/citations?user=HVADdVEAAAAJ&hl=zh-CN',
+  orcid: 'https://orcid.org/0000-0002-4444-5445',
   placeholder: {
     zh: '示例内容 · 在 src/content/site.ts 中替换',
     en: 'Placeholder · Edit src/content/site.ts',

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, Github } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink, Fingerprint, Github, GraduationCap } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import {
@@ -40,8 +40,8 @@ const copy = {
   viewAll: { zh: '查看全部', en: 'View all' },
   profiles: { zh: '学术档案', en: 'Academic profiles' },
   profileNote: {
-    zh: 'Google Scholar 与 ORCID 将在确认本人链接后接入，避免误连同名研究者。',
-    en: 'Google Scholar and ORCID will be connected after the correct personal links are confirmed.',
+    zh: 'Google Scholar、ORCID 与 GitHub 均指向本人公开页面。',
+    en: 'Google Scholar, ORCID, and GitHub link to my public profiles.',
   },
 }
 
@@ -89,9 +89,17 @@ function SiteLayout({ language, onLanguageChange }: { language: Language; onLang
           <span> / </span>
           <span className={language === 'en' ? 'selected' : ''}>EN</span>
         </button>
-        <a className="github-link" href={site.github} target="_blank" rel="noreferrer">
-          <Github size={15} strokeWidth={1.6} />{ui.github[language]}
-        </a>
+        <div className="sidebar-profile-links">
+          <a className="github-link" href={site.scholar} target="_blank" rel="noreferrer">
+            <GraduationCap size={15} strokeWidth={1.6} />Google Scholar
+          </a>
+          <a className="github-link" href={site.orcid} target="_blank" rel="noreferrer">
+            <Fingerprint size={15} strokeWidth={1.6} />ORCID
+          </a>
+          <a className="github-link" href={site.github} target="_blank" rel="noreferrer">
+            <Github size={15} strokeWidth={1.6} />{ui.github[language]}
+          </a>
+        </div>
       </div>
     </aside>
     <main className="main-content">
@@ -327,7 +335,11 @@ function AboutPage() {
     <section className="profile-section">
       <span className="eyebrow">{copy.profiles[language]}</span>
       <p>{copy.profileNote[language]}</p>
-      <a className="text-arrow-link" href={site.github} target="_blank" rel="noreferrer"><Github size={16} />{ui.github[language]} <ArrowUpRight size={14} /></a>
+      <div className="profile-links">
+        <a className="text-arrow-link" href={site.scholar} target="_blank" rel="noreferrer"><GraduationCap size={16} />Google Scholar <ArrowUpRight size={14} /></a>
+        <a className="text-arrow-link" href={site.orcid} target="_blank" rel="noreferrer"><Fingerprint size={16} />ORCID <span className="profile-identifier">0000-0002-4444-5445</span><ArrowUpRight size={14} /></a>
+        <a className="text-arrow-link" href={site.github} target="_blank" rel="noreferrer"><Github size={16} />{ui.github[language]} <ArrowUpRight size={14} /></a>
+      </div>
     </section>
   </div>
 }

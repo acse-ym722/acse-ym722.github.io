@@ -87,6 +87,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--foreground); ou
 .main-nav a:hover::after, .main-nav a.active::after { opacity: 1; transform: scaleX(1); }
 .main-nav a:hover { transform: translateX(3px); }
 .sidebar-bottom { display: flex; flex-direction: column; align-items: flex-start; gap: 1.15rem; }
+.sidebar-profile-links { display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem; }
 .language-toggle {
   min-height: 44px;
   padding: 0;
@@ -191,7 +192,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--foreground); ou
   .main-nav { flex-direction: row; flex-wrap: wrap; justify-content: flex-end; gap: 0 0.85rem; margin-top: 0; }
   .main-nav a { min-height: 44px; font-size: 0.85rem; }
   .main-nav a::after { bottom: 6px; }
-  .sidebar-bottom { flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.65rem; }
+  .sidebar-bottom { flex-flow: row wrap; align-items: center; justify-content: space-between; gap: 0.35rem 1rem; margin-top: 0.65rem; }
+  .sidebar-profile-links { flex-flow: row wrap; gap: 0 0.85rem; }
   .language-toggle, .github-link { min-height: 44px; }
   .main-content { padding: 0 1.25rem; }
   .hero { min-height: auto; padding: 4.5rem 0 4rem; }
@@ -295,7 +297,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--foreground); ou
 .about-page .about-copy { padding-top: 3rem; }
 .profile-section { max-width: var(--reading-width); margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
 .profile-section p { color: var(--muted); font-size: 0.9rem; line-height: 1.8; }
-.profile-section .text-arrow-link { margin-top: 0.75rem; }
+.profile-links { display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; margin-top: 1rem; }
+.profile-section .profile-links .text-arrow-link { min-height: 44px; margin-top: 0; }
+.profile-identifier { color: var(--muted); font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 0.76rem; }
 .case-loading { display: grid; place-content: center; min-height: 100dvh; padding: 2rem; background: oklch(96.5% .004 90); color: oklch(25% .012 250); text-align: center; }
 .case-loading span { color: oklch(47% .17 263); font-size: 1.1rem; font-weight: 700; }
 .case-loading p { color: oklch(50% .01 250); font-size: 0.85rem; line-height: 1.8; }
