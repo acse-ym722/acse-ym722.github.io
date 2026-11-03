@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="孟洋的个人学术主页：科研经历、研究笔记与文章讲解。" />
+    <meta name="theme-color" content="#f0fff0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>孟洋 — 个人学术主页</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      try {
+        const redirect = sessionStorage.getItem('academic-site:redirect')
+        if (redirect && redirect.startsWith('/')) {
+          sessionStorage.removeItem('academic-site:redirect')
+          history.replaceState(null, '', redirect)
+        }
+      } catch { /* The site still works when storage is unavailable. */ }
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
