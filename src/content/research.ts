@@ -28,6 +28,10 @@ export type ResearchLine = {
   interactive?: ResearchLink
 }
 
+/**
+ * 研究主线是长期容器：新论文、代码、阶段结果和后续问题都追加到这里。
+ * 独立交互页面通过 interactive 接入，不与主页代码混写。
+ */
 export const researchLines: ResearchLine[] = [
   {
     slug: 'super-resolution',
@@ -87,6 +91,11 @@ export const researchLines: ResearchLine[] = [
         description: { zh: 'DOI 10.2118/234678-PA', en: 'DOI 10.2118/234678-PA' },
         href: 'https://doi.org/10.2118/234678-PA',
         external: true,
+      },
+      {
+        label: { zh: '三维超分交互科普', en: 'Interactive 3D super-resolution guide' },
+        description: { zh: '从切片到体数据：三维训练、分块推理、显存与感受野实验', en: 'From slices to volumes: 3D training, tiled inference, memory, and receptive-field experiments' },
+        href: '/research/super-resolution/3d',
       },
       {
         label: { zh: 'PoreBoostGAN 代码与模型', en: 'PoreBoostGAN code and models' },

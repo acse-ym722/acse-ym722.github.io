@@ -347,7 +347,7 @@ function AboutPage() {
 function NotFoundPage() {
   const language = useLanguage()
   useDocumentTitle(`404 — ${site.name[language]}`)
-  return <div className="missing-page"><p className="eyebrow">404 / NOT FOUND</p><h1>{language === 'zh' ? '这个页面还没有被写入。' : 'This page has not been written yet.'}</h1><Link className="back-link" to="/"><ArrowLeft size={15} />{language === 'zh' ? '返回首页' : 'Back home'}</Link></div>
+  return <div className="missing-page"><p className="eyebrow">404 / NOT FOUND</p><h1>{language === 'zh' ? '这个页面还没有被写入。' : 'This page has not been written yet.'}</h1><Link className="back-link" to="/">{language === 'zh' ? '返回首页' : 'Back home'}</Link></div>
 }
 
 function InteractiveCase() {
@@ -356,6 +356,15 @@ function InteractiveCase() {
     className="interactive-case-frame"
     src="/poreboost.html"
     title="PoreBoostGAN 交互式论文讲解 / Interactive paper explanation"
+  />
+}
+
+function ThreeSrCase() {
+  useDocumentTitle('3D 超分辨率技术科普 — Meng Yang')
+  return <iframe
+    className="interactive-case-frame"
+    src="/three-sr.html"
+    title="三维超分辨率训练、推理与显存交互科普 / Interactive 3D super-resolution guide"
   />
 }
 
@@ -373,6 +382,7 @@ export default function AcademicSite() {
     <ScrollManager />
     <Routes>
       <Route path="/research/super-resolution/interactive" element={<InteractiveCase />} />
+      <Route path="/research/super-resolution/3d" element={<ThreeSrCase />} />
       <Route element={<SiteLayout language={language} onLanguageChange={changeLanguage} />}>
         <Route index element={<HomePage />} />
         <Route path="research" element={<ResearchPage />} />

@@ -20,6 +20,7 @@ export default defineConfig({
       input: {
         main: path.resolve(__dirname, "index.html"),
         poreboost: path.resolve(__dirname, "poreboost.html"),
+        threeSr: path.resolve(__dirname, "three-sr.html"),
       },
     },
   },
